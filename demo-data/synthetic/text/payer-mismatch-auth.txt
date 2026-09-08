@@ -1,0 +1,11 @@
+Synthetic Authorization Letter
+Document Type: Authorization
+Authorization Number: AUTH-DEMO-005
+Patient: Demo Patient
+Member ID: DEMO-MEMBER-001
+Payer: Other Demo Payer
+Effective Start: 2026-01-01
+Effective End: 2026-02-28
+Approved CPT: 29881
+Provider: Demo Orthopedic Group
+Provider NPI: 1234567890

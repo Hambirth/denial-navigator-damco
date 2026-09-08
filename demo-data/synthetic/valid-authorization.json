@@ -1,0 +1,29 @@
+{
+  "scenario_id": "valid-authorization",
+  "title": "Valid Authorization Evidence",
+  "description": "CO-197 denial where authorization evidence matches the synthetic claim.",
+  "claim": {
+    "claim_id": "DEMO-CLM-001",
+    "patient_name": "Demo Patient",
+    "member_id": "DEMO-MEMBER-001",
+    "payer": "Demo Health Plan",
+    "date_of_service": "2026-01-15",
+    "cpt_code": "29881",
+    "provider_name": "Demo Orthopedic Group",
+    "provider_npi": "1234567890",
+    "denial_code": "CO-197",
+    "denial_description": "Precertification authorization absent"
+  },
+  "authorization": {
+    "source": "Synthetic Authorization Letter",
+    "authorization_number": "AUTH-DEMO-001",
+    "patient_name": "Demo Patient",
+    "member_id": "DEMO-MEMBER-001",
+    "payer": "Demo Health Plan",
+    "effective_start": "2026-01-01",
+    "effective_end": "2026-02-28",
+    "approved_cpt_codes": ["29881"],
+    "provider_name": "Demo Orthopedic Group",
+    "provider_npi": "1234567890"
+  }
+}

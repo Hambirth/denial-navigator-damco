@@ -1,0 +1,13 @@
+Synthetic Explanation of Benefits
+Document Type: EOB
+Claim ID: DEMO-CLM-003
+Patient: Demo Patient
+Member ID: DEMO-MEMBER-001
+Payer: Demo Health Plan
+Date of Service: 2026-01-15
+CPT: 29881
+Provider: Demo Orthopedic Group
+Provider NPI: 1234567890
+Denial Code: CO-197
+Denial Reason: Precertification authorization absent
+Amount: 1000.00

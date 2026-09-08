@@ -1,0 +1,29 @@
+{
+  "scenario_id": "dos-mismatch",
+  "title": "Authorization DOS Mismatch",
+  "description": "Authorization exists, but it does not cover the claim date of service.",
+  "claim": {
+    "claim_id": "DEMO-CLM-002",
+    "patient_name": "Demo Patient",
+    "member_id": "DEMO-MEMBER-001",
+    "payer": "Demo Health Plan",
+    "date_of_service": "2026-04-15",
+    "cpt_code": "29881",
+    "provider_name": "Demo Orthopedic Group",
+    "provider_npi": "1234567890",
+    "denial_code": "CO-197",
+    "denial_description": "Precertification authorization absent"
+  },
+  "authorization": {
+    "source": "Synthetic Authorization Letter",
+    "authorization_number": "AUTH-DEMO-001",
+    "patient_name": "Demo Patient",
+    "member_id": "DEMO-MEMBER-001",
+    "payer": "Demo Health Plan",
+    "effective_start": "2026-01-01",
+    "effective_end": "2026-02-28",
+    "approved_cpt_codes": ["29881"],
+    "provider_name": "Demo Orthopedic Group",
+    "provider_npi": "1234567890"
+  }
+}

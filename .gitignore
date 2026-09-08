@@ -1,0 +1,71 @@
+# Dependencies
+node_modules/
+venv/
+.venv/
+env/
+.env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node / Next.js
+.next/
+out/
+coverage/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+*.tsbuildinfo
+next-env.d.ts
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Uploads, generated documents, and private data
+uploads/
+generated/
+tmp/
+temp/
+*.pdf
+*.docx
+*.xlsx
+*.csv
+*.log
+*.sqlite
+*.db
+*.dump
+
+# Allow intentionally synthetic public fixtures only
+!demo-data/synthetic/.gitkeep
+!tests/fixtures/.gitkeep
+
+# IDE / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Private Git metadata must never be copied in
+.git/
