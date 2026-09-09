@@ -14,6 +14,11 @@ function compactText(value) {
   return value || "Not supplied";
 }
 
+function reasoningLabel(result) {
+  if (result?.reasoning_mode === "llm") return "LLM";
+  return "Deterministic fallback";
+}
+
 export default function Home() {
   const [scenarios, setScenarios] = useState([]);
   const [scenarioId, setScenarioId] = useState("valid-authorization");
@@ -123,7 +128,7 @@ export default function Home() {
             <div>
               <p className="eyebrow">Structured Decision</p>
               <h2>{result.recommended_action.replace("_", " ")}</h2>
-              <p className="muted">Reasoning source: {result.reasoning_source}</p>
+              <p className="muted">Reasoning: {reasoningLabel(result)}</p>
             </div>
             <div className="score">{Math.round(result.confidence * 100)}%</div>
           </div>

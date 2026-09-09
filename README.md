@@ -192,7 +192,8 @@ Testing:
 Optional reasoning:
 
 - deterministic mode by default
-- optional LLM mode for explanation only
+- optional OpenAI LLM mode for explanation only
+- LLM mode cannot change validated facts, recommended action, confidence, or human-review routing
 
 ## Running Locally
 
@@ -205,6 +206,24 @@ source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn app.main:app --reload --port 8000
 ```
+
+Run with deterministic reasoning, which is the default:
+
+```bash
+REASONING_MODE=deterministic uvicorn app.main:app --reload --port 8000
+```
+
+Run with real OpenAI explanation mode:
+
+```bash
+REASONING_MODE=llm \
+OPENAI_API_KEY=your_openai_api_key_here \
+OPENAI_MODEL=gpt-4o-mini \
+OPENAI_TIMEOUT_SECONDS=15 \
+uvicorn app.main:app --reload --port 8000
+```
+
+In LLM mode, the model receives only the already-validated denial facts, missing evidence, contradictions, deterministic recommendation, confidence, and human-review flag. The LLM returns an explanation only. If the key is missing, the call times out, the API fails, or the response is malformed, the API returns the deterministic fallback explanation and preserves the original decision.
 
 Run the frontend:
 

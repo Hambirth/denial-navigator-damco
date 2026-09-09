@@ -95,6 +95,9 @@ class Contradiction(BaseModel):
 class ResponseMeta(BaseModel):
     pipeline_version: str = "phase-4-eval-v1"
     reasoning_source: str = "deterministic"
+    reasoning_mode: str = "deterministic_fallback"
+    reasoning_provider: Optional[str] = None
+    reasoning_model: Optional[str] = None
     supported: bool = True
 
 
@@ -110,6 +113,9 @@ class AnalysisResponse(BaseModel):
     requires_human_review: bool
     reasoning_summary: str
     reasoning_source: str = "deterministic"
+    reasoning_mode: str = "deterministic_fallback"
+    reasoning_provider: Optional[str] = None
+    reasoning_model: Optional[str] = None
     meta: ResponseMeta = Field(default_factory=ResponseMeta)
 
 
