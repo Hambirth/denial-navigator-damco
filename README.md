@@ -63,6 +63,57 @@ flowchart TD
 
 The reasoning service receives already-validated facts. It cannot override the deterministic decision, evidence statuses, contradictions, confidence, or human-review routing.
 
+## Production AI / Agentic Architecture
+
+Proposed production evolution — not implemented in the challenge demo.
+
+The current demo is deterministic-first. In production, an LLM or agent layer could safely sit around the deterministic validation engine as an orchestrator, not as the source of truth.
+
+```mermaid
+flowchart TD
+    Analyst[User / AR Analyst] --> Gateway[API Gateway]
+    Gateway --> Auth[Auth + Tenant Context]
+    Auth --> API[FastAPI Orchestration Service]
+    API --> RequestValidation[Request Validation]
+    RequestValidation --> Agent[Case Workflow / Agent Orchestrator]
+
+    Agent --> Tools[Tool Layer]
+    Tools --> Extraction[Evidence Extraction Tool]
+    Tools --> AuthValidator[Authorization Validator]
+    Tools --> ClaimValidator[Claim Validator]
+    Tools --> PayerRules[Payer Rule Retrieval]
+    Tools --> SOP[Policy / SOP Retrieval]
+    Tools --> DecisionTool[Decision Engine]
+    Tools --> Audit[Audit / Case History Tool]
+
+    Extraction --> Deterministic[Deterministic Validation Engine]
+    AuthValidator --> Deterministic
+    ClaimValidator --> Deterministic
+    DecisionTool --> Deterministic
+    Deterministic --> State[Structured Decision State]
+    State --> LLM[LLM Reasoning / Explanation Layer]
+    LLM --> Approval{Human approval required?}
+    Approval -->|Yes| Human[Human Review]
+    Approval -->|No| Final[Final Recommendation / Workflow Action]
+    Human --> Final
+
+    Redis[(Redis)] -. cache / rate limits / workflow state .-> API
+    Queue[(Queue)] -. long-running jobs .-> Agent
+    Workers[Worker Pool] -. extraction / embeddings / LLM / evals .-> Queue
+    Postgres[(PostgreSQL)] -. case state / audit .-> API
+    Objects[(Object Storage)] -. documents .-> Workers
+    Vector[(Vector Store / pgvector)] -. policy retrieval .-> PayerRules
+    Observability[Observability] -. traces / metrics .-> API
+```
+
+The agent would follow a bounded workflow: analyze the claim, check required evidence, retrieve payer policy if needed, call authorization and claim validators, inspect contradictions, produce a recommendation, and request human approval for risky or uncertain cases.
+
+Production guardrails would include an explicit workflow graph, approved tool list, max steps, max tool calls, timeouts, deterministic terminal states, and human escalation. LangGraph or a similar orchestration framework could be used, but it is not implemented in this challenge demo.
+
+Scaling would use stateless FastAPI instances behind a load balancer/API gateway, Redis for cache/rate limits/short-lived workflow state, queues for long-running document and AI jobs, autoscaled workers, PostgreSQL for durable case state, object storage for documents, and a vector store or `pgvector` for retrieval if RAG becomes justified.
+
+Production observability would track trace ID, tenant ID, model and prompt versions, rule-set version, retrieval document IDs, tool calls, latency, token usage, decision, confidence, and human overrides. It should avoid logging PHI or raw patient content.
+
 ## Key Design Decision: LLM Is Not The Source Of Truth
 
 Facts such as authorization validity, date comparisons, CPT matching, payer matching, provider matching, missing evidence, and contradictions are validated using deterministic code.
@@ -99,6 +150,10 @@ Overall Golden Case Pass Rate: 100%
 These metrics are from a synthetic evaluation set and do not represent production performance.
 
 Golden datasets are useful because they make expected behavior executable. They catch regressions when extraction, validation, decision logic, or failure handling changes.
+
+Production AI evaluation would expand beyond this synthetic golden set. Extraction would be measured with field-level precision/recall, exact match, date accuracy, CPT accuracy, and authorization-number accuracy. Retrieval, if added, would use Recall@K, Precision@K, MRR, NDCG, metadata-filter accuracy, and citation coverage. Decision evaluation would track action accuracy, human-review accuracy, contradiction detection, missing-evidence detection, and false-safe-action rate. False-safe-action rate is especially important because confidently recommending an incorrect action is worse than escalating to a human.
+
+LLM evaluation would measure groundedness, faithfulness, hallucination rate, citation correctness, structured-output validity, instruction following, and completeness. Agent evaluation would measure task success, correct tool selection, unnecessary tool calls, tool failure rate, loop/timeout rate, average steps, and human escalation accuracy.
 
 ## Failure Handling
 

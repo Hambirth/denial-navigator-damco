@@ -59,3 +59,43 @@ Decision: Create a synthetic golden dataset and run it through the real pipeline
 Why: It makes expected behavior executable and easy to inspect.
 
 Tradeoff: Golden cases must be maintained as functionality expands.
+
+## Decision 7: Keep Proposed Agent Architecture Separate From Current Implementation
+
+Context: The challenge demo is intentionally small, but a reviewer may still want to see production AI engineering judgment.
+
+Decision: Document a proposed production agent/orchestrator architecture separately from the current implementation.
+
+Why: This shows how the system could evolve without overstating what is already built.
+
+Tradeoff: The docs are longer and require careful wording to avoid implying that queues, RAG, Redis, or LangGraph are implemented today.
+
+## Decision 8: Bound Agent Tool Use With A Workflow Graph
+
+Context: An unconstrained agent can loop, call unnecessary tools, or produce recommendations from incomplete evidence.
+
+Decision: A production agent should use an explicit state machine or workflow graph with approved tools, max steps, max tool calls, timeouts, and deterministic terminal states.
+
+Why: Claim-denial decisions need auditability and predictable failure behavior.
+
+Tradeoff: The agent is less flexible than an open-ended assistant, but safer for revenue-cycle workflows.
+
+## Decision 9: Treat Human Review As A Safe Terminal State
+
+Context: Incorrect confident recommendations can create operational and compliance risk.
+
+Decision: Missing evidence, contradictions, unsupported denial families, weak retrieval, and tool failures should route to human review.
+
+Why: Escalating uncertain cases is safer than guessing.
+
+Tradeoff: More cases may require manual review until extraction, validation, and policy coverage mature.
+
+## Decision 10: Evaluate AI Systems Beyond Unit Tests
+
+Context: Unit tests prove code behavior, but AI systems also need extraction, retrieval, grounding, and agent-behavior checks.
+
+Decision: A production CI/CD pipeline should include golden evals, retrieval evals, LLM/agent evals, regression comparison, and safety gates.
+
+Why: Model, prompt, retrieval, and tool changes can regress behavior without breaking ordinary unit tests.
+
+Tradeoff: Evaluation infrastructure adds maintenance work and slows deployment, but catches higher-impact failures.
